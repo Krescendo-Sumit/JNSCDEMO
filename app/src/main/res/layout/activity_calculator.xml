@@ -38,6 +38,28 @@
 
             />
 
+        <Button
+            android:id="@+id/btnadd1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Second"
+
+            />
+        <Button
+            android:id="@+id/btnadd2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Third"
+
+            />
+
+        <Button
+            android:id="@+id/btnadd3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Forth"
+
+            />
         <TextView
             android:id="@+id/txtresult"
             android:layout_width="match_parent"
