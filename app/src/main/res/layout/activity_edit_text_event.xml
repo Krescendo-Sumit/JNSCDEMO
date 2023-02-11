@@ -43,6 +43,5 @@
             android:drawableLeft="@drawable/ic_baseline_east_24"
             android:text="NEXT" />
 
-
     </LinearLayout>
 </RelativeLayout>
