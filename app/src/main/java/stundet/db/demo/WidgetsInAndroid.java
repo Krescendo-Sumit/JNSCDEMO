@@ -2,6 +2,7 @@ package stundet.db.demo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -39,6 +40,15 @@ public class WidgetsInAndroid extends AppCompatActivity {
         rb1.setChecked(true);
         toggleButton.setTextOff("De-Active");
         toggleButton.setTextOn("Active");
+
+
+        Intent intent=getIntent();
+
+        Bundle bundle=intent.getExtras();
+        String str=bundle.getString("type");
+        String id=bundle.getString("id");
+
+        Toast.makeText(this, ""+str+" "+id, Toast.LENGTH_SHORT).show();
 
 
          chk1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

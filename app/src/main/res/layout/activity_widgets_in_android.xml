@@ -16,7 +16,9 @@
             android:id="@+id/checkBox1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="C" />
+            android:text="C"
+
+            />
 
         <CheckBox
             android:id="@+id/checkBox2"

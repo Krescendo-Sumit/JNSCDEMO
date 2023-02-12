@@ -2,6 +2,7 @@ package stundet.db.demo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -83,8 +84,12 @@ public class Calculator extends AppCompatActivity implements View.OnClickListene
         {
             case R.id.btnadd2:
                 txtresult.setText("Third Method called");
-                Toast t=Toast.makeText(this,"Hello",Toast.LENGTH_LONG);
-                t.show();
+
+                 Intent intent=new Intent(Calculator.this,WidgetsInAndroid.class);
+                 intent.putExtra("type","10");
+                 intent.putExtra("id","JN001");
+                 startActivity(intent);
+
                 break;
             case R.id.btnadd3:
                 txtresult.setText("Forth Method called");

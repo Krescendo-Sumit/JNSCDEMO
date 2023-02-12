@@ -12,11 +12,7 @@
         <activity
             android:name=".WidgetsInAndroid"
             android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".EditTextEvent"
@@ -28,7 +24,15 @@
             android:exported="true" />
         <activity
             android:name=".Calculator"
-            android:exported="true"></activity>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+
+        </activity>
         <activity
             android:name=".MainActivity2"
             android:exported="true" />
