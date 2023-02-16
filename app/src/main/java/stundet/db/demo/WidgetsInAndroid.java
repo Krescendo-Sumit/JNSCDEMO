@@ -43,10 +43,10 @@ public class WidgetsInAndroid extends AppCompatActivity {
 
 
         Intent intent=getIntent();
-
         Bundle bundle=intent.getExtras();
         String str=bundle.getString("type");
         String id=bundle.getString("id");
+
 
         Toast.makeText(this, ""+str+" "+id, Toast.LENGTH_SHORT).show();
 
