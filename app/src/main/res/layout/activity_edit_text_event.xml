@@ -18,6 +18,8 @@
             android:drawableLeft="@drawable/ic_email"
             android:drawableRight="@drawable/ic_email"
             android:ems="10"
+
+            
             android:inputType="text"
             tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 

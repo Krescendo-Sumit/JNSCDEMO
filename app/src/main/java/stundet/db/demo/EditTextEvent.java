@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -49,12 +50,12 @@ public class EditTextEvent extends AppCompatActivity implements TextWatcher {
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+        Log.i("beforeChanged ","" +charSequence+" "+i+" "+i1+" "+i2);
     }
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+        Log.i("Changed ","" +charSequence+" "+i+" "+i1+" "+i2);
     }
 
     @Override
