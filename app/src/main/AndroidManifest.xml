@@ -2,18 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="stundet.db.demo">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.DemoJNSC">
+        android:theme="@style/Theme.DemoJNSC"
+        android:usesCleartextTraffic="true">
         <activity
-            android:name=".Mydemo"
-            android:exported="false" />
+            android:name=".JasonDemo"
+            android:exported="true" >
+
+        </activity>
         <activity
-            android:name=".LayoutDesign"
+            android:name=".JsonParsingDemo"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,8 +27,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DialogDemo"
+            android:name=".WebViewDemo"
             android:exported="true"></activity>
+        <activity
+            android:name=".Mydemo"
+            android:exported="false" />
+        <activity
+            android:name=".LayoutDesign"
+            android:exported="true" />
+        <activity
+            android:name=".DialogDemo"
+            android:exported="true" />
         <activity
             android:name=".ListControls"
             android:exported="true" />
@@ -38,7 +52,10 @@
             android:exported="true" />
         <activity
             android:name=".Calculator"
-            android:exported="true" />
+            android:exported="true" >
+
+        </activity>
+
         <activity
             android:name=".MainActivity2"
             android:exported="true" />
