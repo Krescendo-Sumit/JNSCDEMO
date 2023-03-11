@@ -13,7 +13,7 @@
         android:theme="@style/Theme.DemoJNSC"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Apidemo2"
+            android:name=".SQLightDemo"
             android:exported="true" >
 
             <intent-filter>
@@ -21,15 +21,19 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
-            android:name=".AlertDialogDemo"
+            android:name=".Apidemo2"
             android:exported="true">
 
         </activity>
         <activity
-            android:name=".ApiDemo"
+            android:name=".AlertDialogDemo"
             android:exported="true"></activity>
+        <activity
+            android:name=".ApiDemo"
+            android:exported="true" />
         <activity
             android:name=".ApiAccessingDemo"
             android:exported="true" />
