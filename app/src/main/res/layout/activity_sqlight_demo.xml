@@ -11,10 +11,45 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <EditText
+            android:id="@+id/tv_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/tv_mobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
         <Button
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Submit" />
+
+        <Button
+            android:id="@+id/btn_show"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Records" />
+
+        <TableLayout
+            android:id="@+id/tbl"
+            android:shrinkColumns="*"
+            android:stretchColumns="*"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
     </LinearLayout>
 </RelativeLayout>
