@@ -13,18 +13,24 @@
         android:theme="@style/Theme.DemoJNSC"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Emp_type"
+            android:name=".ServiceType"
             android:exported="false" />
         <activity
-            android:name=".LoginScreen"
-            android:exported="true"
-            android:theme="@style/Theme.DemoJNSCNoTaskbar">
+            android:name=".HomeScreen"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Emp_type"
+            android:exported="false" />
+        <activity
+            android:name=".LoginScreen"
+            android:exported="true"
+            android:theme="@style/Theme.DemoJNSCNoTaskbar"></activity>
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -32,7 +38,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>

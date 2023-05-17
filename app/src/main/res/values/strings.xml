@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">DemoJNSC</string>
+
+    <array name="status">
+        <item>Select</item>
+        <item>Active</item>
+        <item>De-active</item>
+    </array>
 </resources>
