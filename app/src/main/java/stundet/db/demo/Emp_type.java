@@ -129,9 +129,7 @@ new CreateEmpType().execute();
                 HttpPost ht = new HttpPost("http://192.168.43.125/demo/createEmpType.php");
                 BasicHttpParams basicHttpParams = new BasicHttpParams();
                 ArrayList<NameValuePair> postParameters;
-
                 postParameters = new ArrayList<NameValuePair>();
-
                 postParameters.add(new BasicNameValuePair("title", str_title));
                 postParameters.add(new BasicNameValuePair("level", str_level));
                 postParameters.add(new BasicNameValuePair("detail", str_detail));

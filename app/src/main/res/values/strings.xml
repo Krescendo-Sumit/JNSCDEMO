@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">DemoJNSC</string>
+    <string name="accessibility_service_label">service_label</string>
+    <string name="accessibility_service_description">Details</string>
 
     <array name="status">
         <item>Select</item>
