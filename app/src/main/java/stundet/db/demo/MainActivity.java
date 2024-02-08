@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,6 +23,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
 Context context;
     DBHelper db;
@@ -29,6 +32,7 @@ Context context;
     Button  button;
     Button  sms;
     Button  whatsapp;
+    File file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,17 @@ Context context;
         sms=(Button)findViewById(R.id.button4);
         whatsapp=(Button)findViewById(R.id.button5);
         tv.setText("");
+
+        file = Environment.getExternalStorageDirectory();
+        File ff=new File(file.getAbsolutePath()+"/download/test3.png");
+        if(ff.exists())
+        {
+            Log.i("File Status","Exist "+ff.getTotalSpace());
+        }else
+        {
+            Log.i("File Status","Not Exist");
+        }
+        Log.i("File Path",file.getAbsolutePath());
 
    if(!isAccessibilitySettingsOn(getApplicationContext()))
    {
@@ -87,18 +102,36 @@ Context context;
             @Override
             public void onClick(View v) {
                 try {
-                    //   Toast.makeText(context, "" + mobile, Toast.LENGTH_SHORT).show();
-                 String text = "Hello All :";// Replace with your message.
-                    text += "\n Message : Thank you for connecting me.";
-                    String toNumber = "919420329047"; // Replace with mobile phone number without +Sign or leading zeros, but with country code
-                    //Suppose your country is India and your phone number is “xxxxxxxxxx”, then you need to send “91xxxxxxxxxx”.
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setPackage("com.whatsapp");
-                    intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + toNumber + "&text=" + text));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                   //sendMessage();
-                    //sendMessage();
+                    file = Environment.getExternalStorageDirectory();
+                    File ff=new File(file.getAbsolutePath()+"/download/test3.png");
+                    if(ff.exists())
+                    {
+                        Log.i("File Status","Exist "+ff.getTotalSpace());
+                    }else
+                    {
+                        Log.i("File Status","Not Exist");
+                    }
+                    Uri imageUri = Uri.parse(ff.getAbsolutePath());
+                    Uri uri = Uri.parse("smsto:" + "919420329047");
+                  //  Intent shareIntent = new Intent(Intent.ACTION_SENDTO, uri);
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra("jid", "919420329047" + "@s.whatsapp.net"); //phone number without "+" prefix
+
+                    //Target whatsapp:
+                    shareIntent.setPackage("com.whatsapp");
+                    //Add text and then Image URI
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Demo asdaa asdsdasd asdsd asd asdsd add asdd");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+
+                    shareIntent.setType("image/jpeg");
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    try {
+                        startActivity(shareIntent);
+                    } catch (android.content.ActivityNotFoundException ex) {
+                        Toast.makeText(MainActivity.this, "Error ", Toast.LENGTH_SHORT).show();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

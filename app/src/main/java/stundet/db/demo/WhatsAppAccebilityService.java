@@ -4,76 +4,53 @@ import android.accessibilityservice.AccessibilityService;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.Toast;
 
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 
 import java.util.List;
 
 public class WhatsAppAccebilityService extends AccessibilityService {
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-            Log.i("Pass","1");
-        if(event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED)
-        {
-            if(event.getPackageName().equals("com.whatsapp"))
-            {
-                StringBuilder sb = new StringBuilder();
-                List<CharSequence> texts = event.getText();
-                if (!texts.isEmpty())
-                {
-                    for (CharSequence s : event.getText())
-                    {
-                        sb.append(s);
-                    }
-                    if(sb.toString().equals("Incoming video call"))
-                    {
-                        Log.d( "onAccessibilityEvent", "whatsapp video call" );
-                    }
-                }
+
+        if(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED == event.getEventType()) {
+        Log.e("this", "ACC::onAccessibilityEvent : event=" + event);
+
+        AccessibilityNodeInfo nodeInfo = event.getSource();
+        Log.e("this", "ACC::onAccessibilityEvent : nodeInfo=" + nodeInfo);
+        if (nodeInfo == null) {
+            return;
+        }
+
+
+        //get whatsapp send message button node list
+        List<AccessibilityNodeInfo> sendMessageNodeList = nodeInfo.findAccessibilityNodeInfosByViewId("com.whatsapp:id/send");
+        if (sendMessageNodeList == null) {
+            Log.v("hritik", "sendMessageNodeList is null");
+        }
+        for (AccessibilityNodeInfo node : sendMessageNodeList) {
+            Log.e("this", "ACC::onAccessibilityEvent : send_button=" + node);
+            node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            try {
+                Thread.sleep(5000); // hack for certain devices in which the immediate back click is too fast to handle
+                performGlobalAction(GLOBAL_ACTION_BACK);
+                Thread.sleep(2000);  // same hack as above
+               // performGlobalAction(GLOBAL_ACTION_BACK);
+            } catch (InterruptedException ignored) {
             }
+            // performGlobalAction (GLOBAL_ACTION_BACK);
         }
-
-        Log.i("Pass","2");
-
-        if(getRootInActiveWindow()==null)
-        {
-            return;
-        }
-        Log.i("Pass","3");
-        AccessibilityNodeInfoCompat rootNodeInfo=AccessibilityNodeInfoCompat.wrap(getRootInActiveWindow());
-        List<AccessibilityNodeInfoCompat> messaNodeList=rootNodeInfo.findAccessibilityNodeInfosByViewId("com.whatsapp:id/entry");
-        if(messaNodeList==null || messaNodeList.isEmpty())
-            return;
-        Log.i("Pass","4");
-        AccessibilityNodeInfoCompat messageField=messaNodeList.get(0);
-        if(messageField==null || messageField.getText().length()==0)
-            return;
-
-        Log.i("Pass","5");
-        List<AccessibilityNodeInfoCompat> sendMessageNodeList=rootNodeInfo.findAccessibilityNodeInfosByViewId("com.whatsapp:id/send");
-        if(sendMessageNodeList==null || sendMessageNodeList.isEmpty())
-            return;
-        Log.i("Pass","6");
-        AccessibilityNodeInfoCompat sendMessage=sendMessageNodeList.get(0);
-        if(!sendMessage.isVisibleToUser())
-            return;
-        sendMessage.performAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
-        Log.i("Pass","7");
-        try{
-              Thread.sleep(2000);
-              performGlobalAction(GLOBAL_ACTION_BACK);
-              Thread.sleep(2000);
-        }catch (Exception e)
-        {
-
-        }
-
-        performGlobalAction(GLOBAL_ACTION_BACK);
-
     }
+
+}
+
+
 
     @Override
     public void onInterrupt() {
-        Log.i("Pass","Intterupt");
+        Toast.makeText(getApplicationContext(), "not able to send", Toast.LENGTH_SHORT).show();
+
     }
 }

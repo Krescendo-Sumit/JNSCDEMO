@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import java.io.File;
 import java.net.URLEncoder;
 
 /**
@@ -48,7 +50,7 @@ public class MySMSService extends IntentService {
         intent.setAction(ACTION_SMS);
         intent.putExtra(MESSAGE, message);
         intent.putExtra(COUNT, count);
-        intent.putExtra(COUNT, mobile_number);
+        intent.putExtra(MOBILE, mobile_number);
         context.startService(intent);
     }
 
@@ -64,7 +66,7 @@ public class MySMSService extends IntentService {
         intent.setAction(ACTION_WHATSAPP);
         intent.putExtra(MESSAGE, message);
         intent.putExtra(COUNT, count);
-        intent.putExtra(COUNT, mobile_number);
+        intent.putExtra(MOBILE, mobile_number);
         context.startService(intent);
     }
 
@@ -105,19 +107,55 @@ public class MySMSService extends IntentService {
         try{
             PackageManager packageManager=getApplicationContext().getPackageManager();
         String text = "Hello All :";// Replace with your message.
-        text += "\n Message : Thank you for connecting me.";
-//        mobile=mobile.replace(" ","");
-//        mobile=mobile.replace("+","");
-
-        String toNumber = "9579197126"; // Replace with mobile phone number without +Sign or leading zeros, but with country code
+        text += message;
+        mobile = mobile.replace(" ", "");
+        mobile = mobile.replace("+", "");
+        String toNumber = mobile; // Replace with mobile phone number without +Sign or leading zeros, but with country code
         //Suppose your country is India and your phone number is “xxxxxxxxxx”, then you need to send “91xxxxxxxxxx”.
+
+        Log.i("Whatsapp number is",toNumber);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setPackage("com.whatsapp");
+
         intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + toNumber + "&text=" + URLEncoder.encode(text,"UTF-8")));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if(!(intent.resolveActivity(packageManager)!=null)) {
-            getApplicationContext().startActivity(intent);
-            Thread.sleep(10000);
+
+            File file = Environment.getExternalStorageDirectory();
+            File ff=new File(file.getAbsolutePath()+"/download/test3.png");
+            if(ff.exists())
+            {
+                Log.i("File Status","Exist "+ff.getTotalSpace());
+            }else
+            {
+                Log.i("File Status","Not Exist");
+            }
+            Uri imageUri = Uri.parse(ff.getAbsolutePath());
+            Uri uri = Uri.parse("smsto:" + "919420329047");
+            //  Intent shareIntent = new Intent(Intent.ACTION_SENDTO, uri);
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra("jid", toNumber + "@s.whatsapp.net"); //phone number without "+" prefix
+
+            //Target whatsapp:
+            shareIntent.setPackage("com.whatsapp");
+            //Add text and then Image URI
+            shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+
+            shareIntent.setType("image/jpeg");
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+          //  intent=shareIntent;
+
+
+
+            if(!(shareIntent.resolveActivity(packageManager)!=null)) {
+
+            getApplicationContext().startActivity(shareIntent);
+                Thread.sleep(5000);
+
             sendBroadcastMessage("Whats app send");
         }else
         {
@@ -128,6 +166,9 @@ public class MySMSService extends IntentService {
             Log.i("Error is",e.getMessage());
             sendBroadcastMessage("Whats app not Installed."+e.getMessage());
         }
+
+
+
     }
 
     private void sendBroadcastMessage(String message)

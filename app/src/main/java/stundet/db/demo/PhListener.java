@@ -6,111 +6,107 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CallLog;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.widget.Toast;
+
+import java.util.Date;
 
 @SuppressLint("SimpleDateFormat") public class PhListener extends BroadcastReceiver {
  Context c;
+    private static int lastState = TelephonyManager.CALL_STATE_IDLE;
+    private static Date callStartTime;
+    private static boolean isIncoming;
+    private static String savedNumber;
+
+
     @Override
-    public void onReceive(Context c, Intent i) {
-        // TODO Auto-generated method stub
-        Bundle bundle=i.getExtras();
-        String number="";
-        this.c=c;
-        if(bundle==null)
+    public void onReceive(Context context, Intent intent) {
+        c=context;
+        if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
+            savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
+            Toast.makeText(context, ""+savedNumber, Toast.LENGTH_SHORT).show();
+        } else {
+            String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
+            String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
+
+            int state = 0;
+            if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+                state = TelephonyManager.CALL_STATE_IDLE;
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                state = TelephonyManager.CALL_STATE_OFFHOOK;
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                state = TelephonyManager.CALL_STATE_RINGING;
+            }
+            onCallStateChanged(context, state, savedNumber, intent);
+
+        }
+    }
+
+    public void onCallStateChanged(Context context, int state, String number, Intent intent) {
+        if (lastState == state) {
+            //No change, debounce extras
             return;
-
-        SharedPreferences sp=c.getSharedPreferences("ZnSoftech", Activity.MODE_PRIVATE);
-
-        String s=bundle.getString(TelephonyManager.EXTRA_STATE);
-
-        if(i.getAction().equals(Intent.ACTION_NEW_OUTGOING_CALL))
-        {
-            Toast.makeText(c, "Outgoing call ", Toast.LENGTH_SHORT).show();
-             number=i.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-            sp.edit().putString("number", number).commit();
-            sp.edit().putString("state", s).commit();
-            whatsApp(number);
         }
-
-        else if(s.equals(TelephonyManager.EXTRA_STATE_RINGING))
-        {
-
-            Toast.makeText(c, "Incomming call ", Toast.LENGTH_SHORT).show();
-             number=bundle.getString("incoming_number");
-            sp.edit().putString("number", number).commit();
-            sp.edit().putString("state", s).commit();
-            sendSMS(number,"Message From Sumit");
-            whatsApp(number);
+        switch (state) {
+            case TelephonyManager.CALL_STATE_RINGING:
+                isIncoming = true;
+                callStartTime = new Date();
+                onIncomingCallStarted(context, number, callStartTime, intent);
+                break;
+            case TelephonyManager.CALL_STATE_OFFHOOK:
+                //Transition of ringing->offhook are pickups of incoming calls.  Nothing done on them
+                if (lastState != TelephonyManager.CALL_STATE_RINGING) {
+                    isIncoming = false;
+                    callStartTime = new Date();
+                    onOutgoingCallStarted(context, number, callStartTime, intent);
+                }
+                break;
+            case TelephonyManager.CALL_STATE_IDLE:
+                //Went to idle-  this is the end of a call.  What type depends on previous state(s)
+                if (lastState == TelephonyManager.CALL_STATE_RINGING) {
+                    //Ring but no pickup-  a miss
+                    onMissedCall(context, number, callStartTime, intent);
+                } else if (isIncoming) {
+                    onIncomingCallEnded(context, number, callStartTime, new Date(), intent);
+                } else {
+                    onOutgoingCallEnded(context, number, callStartTime, new Date(), intent);
+                }
+                break;
         }
-
-        else if(s.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))
-        {
-            Toast.makeText(c, "OFF Hook ", Toast.LENGTH_SHORT).show();
-            sp.edit().putString("state", s).commit();
-        }
-
-        else if(s.equals(TelephonyManager.EXTRA_STATE_IDLE))
-        {
-            Toast.makeText(c, "IDle ", Toast.LENGTH_SHORT).show();
-            String state=sp.getString("state", null);
-            if(!state.equals(TelephonyManager.EXTRA_STATE_IDLE))
-            {
-                sp.edit().putString("state", null).commit();
-
-
-                History h=new History(new Handler(),c);
-                c.getContentResolver().registerContentObserver(CallLog.Calls.CONTENT_URI, true, h);
-            }
-            sp.edit().putString("state", s).commit();
-
-        }
-
+        lastState = state;
+        Intent intent1 = new Intent("CallApp");
+        context.sendBroadcast(intent1);
     }
-    public void sendSMS(String phoneNo, String msg) {
-        try {
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNo, null, msg, null, null);
-            Toast.makeText(c, "Message Sent",
-                    Toast.LENGTH_LONG).show();
-        } catch (Exception ex) {
-            Toast.makeText(c,ex.getMessage().toString(),
-                    Toast.LENGTH_LONG).show();
-            ex.printStackTrace();
-        }
+
+    protected void onIncomingCallStarted(Context ctx, String number, Date start, Intent intent) {
+        Toast.makeText(ctx, "calling from " + number, Toast.LENGTH_SHORT).show();
     }
-    public void whatsApp(String mobile) {
-        try {
-            try {
-                Toast.makeText(c, "Mobile"+mobile, Toast.LENGTH_SHORT).show();
-                MySMSService.startActionWHATSAPP(c,"Hello","3",mobile);
 
+    protected void onOutgoingCallStarted(Context ctx, String number, Date start, Intent intent) {
+        Toast.makeText(ctx, "calling to " + number, Toast.LENGTH_SHORT).show();
+    }
 
+    protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end, Intent intent) {
+        Toast.makeText(ctx, "calling from " + number + " ended ", Toast.LENGTH_SHORT).show();
+//        saveData(ctx, number, intent, "Incoming Call");
+    }
 
-             /*   Toast.makeText(c, "Mobile From " + mobile, Toast.LENGTH_SHORT).show();
-                String text = "Hello All :";// Replace with your message.
-                text += "\n Message : Thank you for connecting me.";
-                String toNumber = ""+mobile; // Replace with mobile phone number without +Sign or leading zeros, but with country code
-                //Suppose your country is India and your phone number is “xxxxxxxxxx”, then you need to send “91xxxxxxxxxx”.
+    protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end, Intent intent) {
+        Toast.makeText(ctx, "calling to " + number + " ended ", Toast.LENGTH_SHORT).show();
+//        saveData(ctx, number, intent, "Outgoing Call");
+         MySMSService.startActionWHATSAPP(c,"Hello "+number+", Thank you for connecting to me.","2",number);
+    }
 
-
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + toNumber + "&text=" + text));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                c.startActivity(intent);*/
-            } catch (Exception e) {
-                Toast.makeText(c, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-
-            }
-        } catch (Exception e) {
-            //e.toString();
-        }
+    protected void onMissedCall(Context ctx, String number, Date start, Intent intent) {
+        Toast.makeText(ctx, "missed call from " + number + " sim ", Toast.LENGTH_SHORT).show();
+      ///  saveData(ctx, number, intent, "Missed Call");
     }
 
 }
