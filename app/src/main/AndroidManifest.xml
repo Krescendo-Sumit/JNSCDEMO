@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="stundet.db.demo">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,7 +11,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,22 +19,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DemoJNSC"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Download"
+            android:exported="false" />
+
         <service
             android:name=".MySMSService"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity
             android:name=".RetrofitActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
 
         <service
             android:name=".WhatsAppAccebilityService"
             android:exported="true"
             android:label="@string/accessibility_service_label"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-                      <meta-data
+            <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
+
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -45,7 +50,7 @@
             android:exported="false" />
         <activity
             android:name=".HomeScreen"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".Emp_type"
             android:exported="false" />
@@ -76,6 +81,17 @@
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
+
+   <!--     <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.com.vansuita.pickimage.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/picker_provider_paths" />
+        </provider>-->
     </application>
 
 </manifest>

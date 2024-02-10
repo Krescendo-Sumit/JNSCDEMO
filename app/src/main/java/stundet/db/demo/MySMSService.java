@@ -117,19 +117,26 @@ public class MySMSService extends IntentService {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setPackage("com.whatsapp");
 
-        intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + toNumber + "&text=" + URLEncoder.encode(text,"UTF-8")));
+        intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + toNumber + "&text=" + URLEncoder.encode(text+"    ","UTF-8")));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             File file = Environment.getExternalStorageDirectory();
-            File ff=new File(file.getAbsolutePath()+"/download/test3.png");
+            File ff=new File(file.getAbsolutePath()+"/Download/1.jpg");
+            Log.i("Path11221",Utils.getRootDirPath(this)+"/Download/1.jpg");
+
+       /*     File file =new File(Utils.getRootDirPath(this)+"/11.jpg");
+            File ff=new File(file.getAbsolutePath());
+            Log.i("Path11221",Utils.getRootDirPath(this)+"/Download/1.jpg");*/
+
             if(ff.exists())
             {
-                Log.i("File Status","Exist "+ff.getTotalSpace());
+                Log.i("File Status11212","Exist "+ff.getTotalSpace());
             }else
             {
-                Log.i("File Status","Not Exist");
+                Log.i("File Status 112","Not Exist");
             }
             Uri imageUri = Uri.parse(ff.getAbsolutePath());
+            Log.i("Path11221q",ff.getAbsolutePath());
             Uri uri = Uri.parse("smsto:" + "919420329047");
             //  Intent shareIntent = new Intent(Intent.ACTION_SENDTO, uri);
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -139,12 +146,14 @@ public class MySMSService extends IntentService {
             //Target whatsapp:
             shareIntent.setPackage("com.whatsapp");
             //Add text and then Image URI
-            shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+
 
             shareIntent.setType("image/jpeg");
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
           //  intent=shareIntent;

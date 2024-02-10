@@ -23,7 +23,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class MainActivity extends AppCompatActivity {
 Context context;
@@ -32,6 +40,7 @@ Context context;
     Button  button;
     Button  sms;
     Button  whatsapp;
+    Button  download;
     File file;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,7 @@ Context context;
         button=(Button)findViewById(R.id.button);
         sms=(Button)findViewById(R.id.button4);
         whatsapp=(Button)findViewById(R.id.button5);
+        download=(Button)findViewById(R.id.button6);
         tv.setText("");
 
         file = Environment.getExternalStorageDirectory();
@@ -73,6 +83,28 @@ Context context;
             public void onClick(View v) {
              MySMSService.startActionWHATSAPP(context,"Hello","3","919420329047");
             }
+        });
+
+        download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try{
+               /*     String Url="http://krescendo.co.in/prachar/image/11.jpg";
+                    File file = Environment.getExternalStorageDirectory();
+                    File ff=new File(file.getAbsolutePath()+"/download/test3.png");
+                    downloadFile(Url,ff);*/
+
+                    Intent intent=new Intent(context,Download.class);
+                    startActivity(intent);
+
+                }catch (Exception e)
+                {
+                    Toast.makeText(context, "Error in File Downlaod\n"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+
+           }
         });
 
         db=new DBHelper(this, "ZnSoftech.db", null, 2);
@@ -250,4 +282,21 @@ Context context;
             Toast.makeText(context, ""+result, Toast.LENGTH_SHORT).show();
         }
     };
+
+    private void downloadFile(String url1, File outputFile) {
+        try {
+            URL url = new URL(url1);
+            InputStream inputStream = url.openStream();
+            FileOutputStream fileOutputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + "/Java_Programming.jpg");
+            int length;
+            byte[] buffer = new byte[1024];
+            while ((length = inputStream.read(buffer)) > -1) {
+                fileOutputStream.write(buffer, 0, length);
+            }
+            fileOutputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

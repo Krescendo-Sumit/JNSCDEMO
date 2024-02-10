@@ -23,12 +23,21 @@ public class WhatsAppAccebilityService extends AccessibilityService {
         if (nodeInfo == null) {
             return;
         }
-
-
+         /*
+            AccessibilityNodeInfoCompat rootNodeInfo=AccessibilityNodeInfoCompat.wrap(getRootInActiveWindow());
+            List<AccessibilityNodeInfoCompat> messaNodeList=rootNodeInfo.findAccessibilityNodeInfosByViewId("com.whatsapp:id/entry");
+            Log.i("Pass","4.0"+(messaNodeList==null)+" "+messaNodeList.isEmpty());
+            if(messaNodeList==null || messaNodeList.isEmpty())
+                return;
+            Log.i("Pass","4.1");
+            AccessibilityNodeInfoCompat messageField=messaNodeList.get(0);
+            if(messageField==null || messageField.getText().length()==0||!messageField.getText().toString().endsWith("   "))
+                return;
+          */
         //get whatsapp send message button node list
         List<AccessibilityNodeInfo> sendMessageNodeList = nodeInfo.findAccessibilityNodeInfosByViewId("com.whatsapp:id/send");
         if (sendMessageNodeList == null) {
-            Log.v("hritik", "sendMessageNodeList is null");
+            Log.v("SumitSuradkar", "sendMessageNodeList is null");
         }
         for (AccessibilityNodeInfo node : sendMessageNodeList) {
             Log.e("this", "ACC::onAccessibilityEvent : send_button=" + node);
